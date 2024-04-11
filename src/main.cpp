@@ -1,5 +1,8 @@
 #include <iostream>
+#include <limits>
 #include <string>
+#include "database.hpp"
+
 
 void drawMenu() {
     std::cout << "--------------------" << std::endl;
@@ -31,19 +34,52 @@ int readCommand() {
     }
 }
 
+void readStudentsInfo(Database& db) {
+    std::string name;
+    std::string lastname;
+    std::string address;
+    char chosenSex;
+    int pesel = 0;
+    Sex sex;
+
+    std::cout << "Imie: ";
+    std::cin >> name;
+    std::cout << "Nazwisko: ";
+    std::cin >> lastname;
+    std::cout << "Adres: ";
+    std::cin >> address;
+    std::cout << "Pesel: ";
+    std::cin >> pesel;
+    std::cout << "Plec: (m lub k) ";
+    std::cin >> chosenSex;
+
+    if (chosenSex == 'm') {
+        sex = Sex::Male;
+    } else if (chosenSex == 'k') {
+        sex = Sex::Female;
+    } else {
+        std::cout << "Nie ma takiej opcji!\n";
+        return;
+    }
+
+    db.addStudent(name, lastname, address, pesel, sex);
+}
+
 int main() {
-    drawMenu();
+    Database db;
 
     while (true) {
+        drawMenu();
         switch (readCommand()) {
         case 1:
-            std::cout << "Jeden!\n";
+            std::cout << "Wprowadz dane nowego studenta:\n";
+            readStudentsInfo(db);
             break;
         case 2:
             std::cout << "Dwa!\n";
             break;
         case 3:
-            std::cout << "Trzy!\n";
+            db.selectWholeDatabase();
             break;
         case 4:
             std::cout << "Koniec!\n";

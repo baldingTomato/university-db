@@ -7,9 +7,11 @@ set(FLAGS_COMMON -Wall)
 set(FLAGS_LINUX -Wextra -Werror -Wconversion -pedantic)
 set(FLAGS_WINDOWS /W4 /WX /we)
 
+set(SOURCES src/database.cpp src/student.cpp)
+
 project(university-db)
 
-add_executable(${PROJECT_NAME} src/main.cpp)
+add_executable(${PROJECT_NAME} src/main.cpp ${SOURCES})
 
 if(UNIX)
     target_compile_options(${PROJECT_NAME} PRIVATE ${FLAGS_COMMON} ${FLAGS_LINUX})
