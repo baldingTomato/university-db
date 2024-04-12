@@ -3,14 +3,14 @@
 #include <string>
 #include "database.hpp"
 
-
 void drawMenu() {
     std::cout << "--------------------" << std::endl;
     std::cout << "Wybierz opcje:" << std::endl;
     std::cout << "1.Dodaj studenta" << std::endl;
     std::cout << "2.Wyszukaj studenta" << std::endl;
     std::cout << "3.Wyswietl studentow" << std::endl;
-    std::cout << "4.Zamknij baze" << std::endl;
+    std::cout << "4.Usun studenta" << std::endl;
+    std::cout << "5.Zamknij baze" << std::endl;
     std::cout << "--------------------" << std::endl;
 }
 
@@ -18,7 +18,7 @@ int readCommand() {
     int command = 0;
 
     if (std::cin >> command) {
-        if (command == 1 || command == 2 || command == 3 || command == 4) {
+        if (command == 1 || command == 2 || command == 3 || command == 4 || command == 5) {
             return command;
         } else {
             std::cout << "Nie ma takiej opcji!\n\n";
@@ -65,6 +65,21 @@ void readStudentsInfo(Database& db) {
     db.addStudent(name, lastname, address, pesel, sex);
 }
 
+void readIndexToRemove(Database& db) {
+    int index = -1;
+    std::cout << "Podaj indeks studenta, ktorego chcesz usunac: ";
+    std::cin >> index;
+
+    if (!std::cin) {
+        std::cout << "Nie moze istniec taki indeks!\n\n";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    } else {
+        db.removeStudent(index);
+    }
+}
+
 int main() {
     Database db;
 
@@ -82,6 +97,9 @@ int main() {
             db.selectWholeDatabase();
             break;
         case 4:
+            readIndexToRemove(db);
+            break;
+        case 5:
             std::cout << "Koniec!\n";
             return 0;
         default:

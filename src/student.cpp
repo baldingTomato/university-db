@@ -34,3 +34,7 @@ std::string Student::getSex() {
 int Student::getIndex() {
     return index_;
 };
+
+void Student::setIndex(const int& index) {
+    index_ = index;
+}

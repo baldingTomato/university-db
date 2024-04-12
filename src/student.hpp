@@ -21,4 +21,6 @@ public:
     int getPesel();
     std::string getSex();
     int getIndex();
+
+    void setIndex(const int& index);
 };

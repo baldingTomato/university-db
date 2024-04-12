@@ -7,6 +7,7 @@ void Database::addStudent(const std::string& name, const std::string& lastname, 
     if (!result.second) {
         std::cout << "Failed adding student " + name + " " + lastname + " to the database!\n";
     } else {
+        students_.at(counter_).setIndex(counter_);
         incCounter();
     }
 }
@@ -15,7 +16,7 @@ void Database::selectWholeDatabase() {
     std::cout << "-------------------------------------------------------------------------------------------\n";
 
     for (auto record : students_) {
-        std::cout << std::to_string(record.first) + " " +
+        std::cout << std::to_string(record.second.getIndex()) + " " +
                          record.second.getName() + " " +
                          record.second.getLastName() + " " +
                          record.second.getAddress() + " " +
@@ -24,4 +25,13 @@ void Database::selectWholeDatabase() {
     }
 
     std::cout << "-------------------------------------------------------------------------------------------\n";
+}
+
+void Database::removeStudent(const int& index) {
+    auto stud = students_.extract(index);
+    if (stud.empty()) {
+        std::cout << "Takiego studenta nie ma w bazie danych studentów!\n";
+    } else {
+        std::cout << "Student " + stud.mapped().getFullName() + " zostal usuniety z bazy!\n";
+    }
 }
