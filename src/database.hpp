@@ -14,4 +14,5 @@ public:
     void selectWholeDatabase();
     void removeStudent(const int& index);
     void searchByLastName(const std::string& lastName);
+    void searchByPesel(const int& pesel);
 };

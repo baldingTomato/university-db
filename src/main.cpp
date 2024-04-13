@@ -19,7 +19,7 @@ int readCommand() {
     int command = 0;
 
     if (std::cin >> command) {
-        if (command == 1 || command == 2 || command == 3 || command == 4 || command == 5) {
+        if (command == 1 || command == 2 || command == 3 || command == 4 || command == 5 || command == 6) {
             return command;
         } else {
             std::cout << "Nie ma takiej opcji!\n\n";
@@ -89,6 +89,21 @@ void readLastNameToSearch(Database& db) {
     db.searchByLastName(input);
 }
 
+void readPeselToSearch(Database& db) {
+    int input;
+    std::cout << "Podaj pesel do wyszukania: ";
+    std::cin >> input;
+
+    if (!std::cin) {
+        std::cout << "Nie moze istniec taki pesel!\n\n";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    } else {
+        db.searchByPesel(input);
+    }
+}
+
 int main() {
     Database db;
 
@@ -103,12 +118,15 @@ int main() {
             readLastNameToSearch(db);
             break;
         case 3:
-            db.selectWholeDatabase();
+            readPeselToSearch(db);
             break;
         case 4:
-            readIndexToRemove(db);
+            db.selectWholeDatabase();
             break;
         case 5:
+            readIndexToRemove(db);
+            break;
+        case 6:
             std::cout << "Koniec!\n";
             return 0;
         default:

@@ -42,3 +42,15 @@ void Database::searchByLastName(const std::string& lastName) {
 
     std::cout << "Nie ma takiego nazwiska w bazie!\n";
 }
+
+void Database::searchByPesel(const int& pesel) {
+    for (const auto& [_, student] : students_) {
+        if (student.getPesel() == pesel) {
+            std::cout << "Znaleziono studenta:\n";
+            student.printData();
+            return;
+        }
+    }
+
+    std::cout << "Nie ma takiego peselu w bazie!\n";
+}
