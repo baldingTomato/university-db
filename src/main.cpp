@@ -7,10 +7,11 @@ void drawMenu() {
     std::cout << "--------------------" << std::endl;
     std::cout << "Wybierz opcje:" << std::endl;
     std::cout << "1.Dodaj studenta" << std::endl;
-    std::cout << "2.Wyszukaj studenta" << std::endl;
-    std::cout << "3.Wyswietl studentow" << std::endl;
-    std::cout << "4.Usun studenta" << std::endl;
-    std::cout << "5.Zamknij baze" << std::endl;
+    std::cout << "2.Wyszukaj studenta po nazwisku" << std::endl;
+    std::cout << "3.Wyszukaj studenta po peselu" << std::endl;
+    std::cout << "4.Wyswietl studentow" << std::endl;
+    std::cout << "5.Usun studenta" << std::endl;
+    std::cout << "6.Zamknij baze" << std::endl;
     std::cout << "--------------------" << std::endl;
 }
 
@@ -80,6 +81,14 @@ void readIndexToRemove(Database& db) {
     }
 }
 
+void readLastNameToSearch(Database& db) {
+    std::string input;
+    std::cout << "Podaj nazwisko do wyszukania: ";
+    std::cin >> input;
+
+    db.searchByLastName(input);
+}
+
 int main() {
     Database db;
 
@@ -91,7 +100,7 @@ int main() {
             readStudentsInfo(db);
             break;
         case 2:
-            std::cout << "Dwa!\n";
+            readLastNameToSearch(db);
             break;
         case 3:
             db.selectWholeDatabase();

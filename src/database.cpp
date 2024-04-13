@@ -15,13 +15,8 @@ void Database::addStudent(const std::string& name, const std::string& lastname, 
 void Database::selectWholeDatabase() {
     std::cout << "-------------------------------------------------------------------------------------------\n";
 
-    for (auto record : students_) {
-        std::cout << std::to_string(record.second.getIndex()) + " " +
-                         record.second.getName() + " " +
-                         record.second.getLastName() + " " +
-                         record.second.getAddress() + " " +
-                         std::to_string(record.second.getPesel()) + " " +
-                         record.second.getSex() + "\n";
+    for (const auto& [_, student] : students_) {
+        student.printData();
     }
 
     std::cout << "-------------------------------------------------------------------------------------------\n";
@@ -34,4 +29,16 @@ void Database::removeStudent(const int& index) {
     } else {
         std::cout << "Student " + stud.mapped().getFullName() + " zostal usuniety z bazy!\n";
     }
+}
+
+void Database::searchByLastName(const std::string& lastName) {
+    for (const auto& [_, student] : students_) {
+        if (student.getLastName() == lastName) {
+            std::cout << "Znaleziono studenta:\n";
+            student.printData();
+            return;
+        }
+    }
+
+    std::cout << "Nie ma takiego nazwiska w bazie!\n";
 }

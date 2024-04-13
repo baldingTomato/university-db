@@ -14,13 +14,15 @@ class Student {
 public:
     Student(std::string name, std::string lastname, std::string address, int pesel, Sex sex);
 
-    std::string getFullName();
-    std::string getName();
-    std::string getLastName();
-    std::string getAddress();
-    int getPesel();
-    std::string getSex();
-    int getIndex();
+    std::string getFullName() const;
+    std::string getName() const;
+    std::string getLastName() const;
+    std::string getAddress() const;
+    int getPesel() const;
+    std::string getSex() const;
+    int getIndex() const;
 
     void setIndex(const int& index);
+
+    void printData() const;
 };
