@@ -10,8 +10,10 @@ void drawMenu() {
     std::cout << "2.Wyszukaj studenta po nazwisku" << std::endl;
     std::cout << "3.Wyszukaj studenta po peselu" << std::endl;
     std::cout << "4.Wyswietl studentow" << std::endl;
-    std::cout << "5.Usun studenta" << std::endl;
-    std::cout << "6.Zamknij baze" << std::endl;
+    std::cout << "5.Wyswietl studentow wedug peselu" << std::endl;
+    std::cout << "6.Wyswietl studentow wedlug nazwiska" << std::endl;
+    std::cout << "7.Usun studenta" << std::endl;
+    std::cout << "8.Zamknij baze" << std::endl;
     std::cout << "--------------------" << std::endl;
 }
 
@@ -19,7 +21,7 @@ int readCommand() {
     int command = 0;
 
     if (std::cin >> command) {
-        if (command == 1 || command == 2 || command == 3 || command == 4 || command == 5 || command == 6) {
+        if (command == 1 || command == 2 || command == 3 || command == 4 || command == 5 || command == 6 || command == 7 || command == 8) {
             return command;
         } else {
             std::cout << "Nie ma takiej opcji!\n\n";
@@ -124,9 +126,15 @@ int main() {
             db.selectWholeDatabase();
             break;
         case 5:
-            readIndexToRemove(db);
+            db.selectAndSortByPesel();
             break;
         case 6:
+            db.selectAndSortByLastName();
+            break;
+        case 7:
+            readIndexToRemove(db);
+            break;
+        case 8:
             std::cout << "Koniec!\n";
             return 0;
         default:

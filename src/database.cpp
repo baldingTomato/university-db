@@ -1,5 +1,9 @@
 #include "database.hpp"
+#include <algorithm>
 #include <iostream>
+#include <utility>
+#include <vector>
+
 
 void Database::addStudent(const std::string& name, const std::string& lastname, const std::string& address, const int& pesel, const Sex& sex) {
     auto result = students_.emplace(counter_, Student(name, lastname, address, pesel, sex));
@@ -20,6 +24,40 @@ void Database::selectWholeDatabase() {
     }
 
     std::cout << "-------------------------------------------------------------------------------------------\n";
+}
+
+void Database::selectAndSortByPesel() {
+    std::vector<std::pair<int, int>> sortedPesels;
+    sortedPesels.reserve(students_.size());
+
+    for (const auto& [index, student] : students_) {
+        sortedPesels.emplace_back(index, student.getPesel());
+    }
+
+    std::sort(sortedPesels.begin(), sortedPesels.end(), [](const std::pair<int, int>& a, const std::pair<int, int>& b) {
+        return a.second < b.second;
+    });
+
+    for (const auto& pesel : sortedPesels) {
+        students_.at(pesel.first).printData();
+    }
+}
+
+void Database::selectAndSortByLastName() {
+    std::vector<std::pair<int, std::string>> sortedLastNames;
+    sortedLastNames.reserve(students_.size());
+
+    for (const auto& [index, student] : students_) {
+        sortedLastNames.emplace_back(index, student.getLastName());
+    }
+
+    std::sort(sortedLastNames.begin(), sortedLastNames.end(), [](const std::pair<int, std::string>& a, const std::pair<int, std::string>& b) {
+        return a.second < b.second;
+    });
+
+    for (const auto& lastName : sortedLastNames) {
+        students_.at(lastName.first).printData();
+    }
 }
 
 void Database::removeStudent(const int& index) {
