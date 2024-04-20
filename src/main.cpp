@@ -42,7 +42,7 @@ void readStudentsInfo(Database& db) {
     std::string lastname;
     std::string address;
     char chosenSex;
-    int pesel = 0;
+    std::string pesel;
     Sex sex;
 
     std::cout << "Imie: ";
@@ -53,6 +53,12 @@ void readStudentsInfo(Database& db) {
     std::cin >> address;
     std::cout << "Pesel: ";
     std::cin >> pesel;
+
+    if (!db.checkPeselCorrectness(pesel)) {
+        std::cout << "Nie moze istniec taki pesel!\n\n";
+        return;
+    }
+
     std::cout << "Plec: (m lub k) ";
     std::cin >> chosenSex;
 
@@ -92,15 +98,12 @@ void readLastNameToSearch(Database& db) {
 }
 
 void readPeselToSearch(Database& db) {
-    int input;
+    std::string input;
     std::cout << "Podaj pesel do wyszukania: ";
     std::cin >> input;
 
-    if (!std::cin) {
+    if (!db.checkPeselCorrectness(input)) {
         std::cout << "Nie moze istniec taki pesel!\n\n";
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
     } else {
         db.searchByPesel(input);
     }

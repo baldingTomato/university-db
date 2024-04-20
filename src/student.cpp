@@ -1,7 +1,7 @@
 #include "student.hpp"
 #include <iostream>
 
-Student::Student(std::string name, std::string lastname, std::string address, int pesel, Sex sex)
+Student::Student(std::string name, std::string lastname, std::string address, std::string pesel, Sex sex)
     : name_(name), lastname_(lastname), address_(address), pesel_(pesel), sex_(sex){};
 
 std::string Student::getFullName() const {
@@ -20,7 +20,7 @@ std::string Student::getAddress() const {
     return address_;
 };
 
-int Student::getPesel() const {
+std::string Student::getPesel() const {
     return pesel_;
 };
 
@@ -45,6 +45,6 @@ void Student::printData() const {
                      name_ + " " +
                      lastname_ + " " +
                      address_ + " " +
-                     std::to_string(pesel_) + " " +
+                     pesel_ + " " +
                      getSex() + "\n";
 }
