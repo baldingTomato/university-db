@@ -8,7 +8,7 @@ class Student {
     const std::string lastname_;
     const std::string address_;
     const std::string pesel_;
-    int index_;
+    int index_ = 0;
     const Sex sex_;
 
 public:
