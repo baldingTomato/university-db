@@ -17,6 +17,7 @@ void Database::addStudent(const std::string& name, const std::string& lastname, 
         std::cout << "Nie udalo sie dodac studenta " + name + " " + lastname + " do bazy!\n";
     } else {
         students_.at(counter_).setIndex(counter_);
+        std::cout << "Dodano studenta do bazy.\n";
         incCounter();
     }
 }
@@ -119,4 +120,12 @@ bool Database::checkPeselCorrectness(const std::string& pesel) {
     }
 
     return true;
+}
+
+bool Database::isEmpty() {
+    if (students_.empty()) {
+        return true;
+    }
+
+    return false;
 }

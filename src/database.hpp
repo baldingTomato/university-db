@@ -18,4 +18,5 @@ public:
     void searchByLastName(const std::string& lastName);
     void searchByPesel(const std::string& pesel);
     bool checkPeselCorrectness(const std::string& pesel);
+    bool isEmpty();
 };
