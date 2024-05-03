@@ -1,28 +1,19 @@
 #pragma once
 
 #include <string>
-#include "sex.hpp"
+#include "person.hpp"
 
-class Student {
-    const std::string name_;
-    const std::string lastname_;
-    const std::string address_;
-    const std::string pesel_;
+class Student : public Person {
     int index_ = 0;
-    const Sex sex_;
 
 public:
-    Student(std::string name, std::string lastname, std::string address, std::string pesel, Sex sex);
+    Student(const std::string& name, const std::string& lastname, const std::string& address, const std::string& pesel, const Sex& sex);
 
-    std::string getFullName() const;
-    std::string getName() const;
-    std::string getLastName() const;
-    std::string getAddress() const;
-    std::string getPesel() const;
-    std::string getSex() const;
-    int getIndex() const;
+    int getIndex() const override;
+    void setIndex(const int& index) override;
 
-    void setIndex(const int& index);
+    double getEarnings() const override { return 0; };
+    void setEarnings(const double& earnings) override{};
 
-    void printData() const;
+    void printData() const override;
 };

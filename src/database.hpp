@@ -1,16 +1,15 @@
 #pragma once
 
 #include <map>
+#include <memory>
 #include "student.hpp"
 
 class Database {
-    std::map<int, Student> students_;
-    int counter_ = 0;
-
-    void incCounter() { ++counter_; };
+    std::map<std::string, std::unique_ptr<Person>> people_;
 
 public:
     void addStudent(const std::string& name, const std::string& lastname, const std::string& address, const std::string& pesel, const Sex& sex);
+    void addEmployee(const std::string& name, const std::string& lastname, const std::string& address, const std::string& pesel, const Sex& sex, const double& earnings);
     void selectWholeDatabase();
     void selectAndSortByPesel();
     void selectAndSortByLastName();

@@ -4,22 +4,50 @@
 #include <numeric>
 #include <utility>
 #include <vector>
+#include "employee.hpp"
 
 void Database::addStudent(const std::string& name, const std::string& lastname, const std::string& address, const std::string& pesel, const Sex& sex) {
+    if (!checkPeselCorrectness(pesel)) {
+        std::cout << "Taki pesel nie moze istniec! Dodawanie do bazy przerwane.\n";
+    }
+
     if (pesel.at(9) % 2 == 0 && sex != Sex::Female) {
         std::cout << "Pesel nie pasuje do reszty danych studenta! Dodawanie do bazy przerwane.\n";
         return;
     }
 
-    auto result = students_.emplace(counter_, Student(name, lastname, address, pesel, sex));
+    auto result = people_.emplace(pesel, std::make_unique<Student>(name, lastname, address, pesel, sex));
 
     if (!result.second) {
         std::cout << "Nie udalo sie dodac studenta " + name + " " + lastname + " do bazy!\n";
     } else {
-        students_.at(counter_).setIndex(counter_);
+        people_.at(pesel)->setIndex(std::stoi(pesel) % 1000000);
         std::cout << "Dodano studenta do bazy.\n";
-        incCounter();
     }
+}
+
+void Database::addEmployee(const std::string& name, const std::string& lastname, const std::string& address, const std::string& pesel, const Sex& sex, const double& earnings) {
+
+    if (!checkPeselCorrectness(pesel)) {
+        std::cout << "Taki pesel nie moze istniec! Dodawanie do bazy przerwane.\n";
+    }
+
+    if (pesel.at(9) % 2 == 0 && sex != Sex::Female) {
+        std::cout << "Pesel nie pasuje do reszty danych studenta! Dodawanie do bazy przerwane.\n";
+        return;
+    }
+
+    auto result = people_.emplace(pesel, std::make_unique<Employee>(name, lastname, address, pesel, sex));
+
+    if (!result.second) {
+        std::cout << "Nie udalo sie dodac pracownika " + name + " " + lastname + " do bazy!\n";
+    } else {
+        if(name == "Tomasz"){
+            people_.at(pesel)->setEarnings(5600.99);
+        }
+        std::cout << "Dodano pracownika do bazy.\n";
+    }
+
 }
 
 void Database::selectWholeDatabase() {
