@@ -4,110 +4,97 @@
 #include <numeric>
 #include <utility>
 #include <vector>
-#include "employee.hpp"
 
-void Database::addStudent(const std::string& name, const std::string& lastname, const std::string& address, const std::string& pesel, const Sex& sex) {
-    if (!checkPeselCorrectness(pesel)) {
-        std::cout << "Taki pesel nie moze istniec! Dodawanie do bazy przerwane.\n";
-    }
-
-    if (pesel.at(9) % 2 == 0 && sex != Sex::Female) {
-        std::cout << "Pesel nie pasuje do reszty danych studenta! Dodawanie do bazy przerwane.\n";
+void Database::addPerson(std::unique_ptr<Person> person) {
+    if (!checkPeselCorrectness(person->getPesel())) {
+        std::cout << "Taki pesel nie moze istniec!\n";
+        return;
+    } else if (person->getPesel().at(9) % 2 == 0 && person->getSex() != "Female") {
+        std::cout << "Pesel nie pasuje do reszty danych! Dodawanie do bazy przerwane.\n";
         return;
     }
 
-    auto result = people_.emplace(pesel, std::make_unique<Student>(name, lastname, address, pesel, sex));
+    auto searchedPerson = people_.find(person->getPesel());
 
-    if (!result.second) {
-        std::cout << "Nie udalo sie dodac studenta " + name + " " + lastname + " do bazy!\n";
-    } else {
-        people_.at(pesel)->setIndex(std::stoi(pesel) % 1000000);
-        std::cout << "Dodano studenta do bazy.\n";
-    }
-}
-
-void Database::addEmployee(const std::string& name, const std::string& lastname, const std::string& address, const std::string& pesel, const Sex& sex, const double& earnings) {
-
-    if (!checkPeselCorrectness(pesel)) {
-        std::cout << "Taki pesel nie moze istniec! Dodawanie do bazy przerwane.\n";
-    }
-
-    if (pesel.at(9) % 2 == 0 && sex != Sex::Female) {
-        std::cout << "Pesel nie pasuje do reszty danych studenta! Dodawanie do bazy przerwane.\n";
+    if (searchedPerson != people_.end()) {
+        std::cout << "Taka osoba juz znajduje sie w bazie!\n";
         return;
     }
 
-    auto result = people_.emplace(pesel, std::make_unique<Employee>(name, lastname, address, pesel, sex));
+    std::string fullname = person->getFullName();
+    person->setIndex(std::stoi(person->getPesel().substr(0, 9)) / 1804);
+    auto result = people_.emplace(person->getPesel(), std::move(person));
 
     if (!result.second) {
-        std::cout << "Nie udalo sie dodac pracownika " + name + " " + lastname + " do bazy!\n";
+        std::cout << "Nie udalo sie dodac osoby " + fullname + " do bazy!\n";
     } else {
-        if(name == "Tomasz"){
-            people_.at(pesel)->setEarnings(5600.99);
-        }
-        std::cout << "Dodano pracownika do bazy.\n";
+        std::cout << "Dodano " + fullname + " do bazy.\n";
     }
-
 }
 
 void Database::selectWholeDatabase() {
     std::cout << "-------------------------------------------------------------------------------------------\n";
 
-    for (const auto& [_, student] : students_) {
-        student.printData();
+    for (const auto& [_, person] : people_) {
+        person->printData();
     }
 
     std::cout << "-------------------------------------------------------------------------------------------\n";
 }
 
-void Database::selectAndSortByPesel() {
-    std::vector<std::pair<int, std::string>> sortedPesels;
-    sortedPesels.reserve(students_.size());
+// There is no point in sorting by Pesel since values of a map are already sorted by key (by pesel).
+//  void Database::selectAndSortByPesel() {
+//      std::vector<std::pair<int, std::string>> sortedPesels;
+//      sortedPesels.reserve(people_.size());
 
-    for (const auto& [index, student] : students_) {
-        sortedPesels.emplace_back(index, student.getPesel());
-    }
+//     for (const auto& [index, student] : students_) {
+//         sortedPesels.emplace_back(index, student.getPesel());
+//     }
 
-    std::sort(sortedPesels.begin(), sortedPesels.end(), [](const std::pair<int, std::string>& a, const std::pair<int, std::string>& b) {
-        return a.second < b.second;
-    });
+//     std::sort(sortedPesels.begin(), sortedPesels.end(), [](const std::pair<int, std::string>& a, const std::pair<int, std::string>& b) {
+//         return a.second < b.second;
+//     });
 
-    for (const auto& pesel : sortedPesels) {
-        students_.at(pesel.first).printData();
-    }
-}
+//     for (const auto& pesel : sortedPesels) {
+//         students_.at(pesel.first).printData();
+//     }
+// }
 
 void Database::selectAndSortByLastName() {
-    std::vector<std::pair<int, std::string>> sortedLastNames;
-    sortedLastNames.reserve(students_.size());
+    std::vector<std::pair<std::string, std::string>> sortedLastNames;
+    sortedLastNames.reserve(people_.size());
 
-    for (const auto& [index, student] : students_) {
-        sortedLastNames.emplace_back(index, student.getLastName());
+    for (const auto& [index, student] : people_) {
+        sortedLastNames.emplace_back(index, student->getLastName());
     }
 
-    std::sort(sortedLastNames.begin(), sortedLastNames.end(), [](const std::pair<int, std::string>& a, const std::pair<int, std::string>& b) {
+    std::sort(sortedLastNames.begin(), sortedLastNames.end(), [](const std::pair<std::string, std::string>& a, const std::pair<std::string, std::string>& b) {
         return a.second < b.second;
     });
 
-    for (const auto& lastName : sortedLastNames) {
-        students_.at(lastName.first).printData();
+    for (const auto& [index, _] : sortedLastNames) {
+        people_.at(index)->printData();
     }
 }
 
-void Database::removeStudent(const int& index) {
-    auto stud = students_.extract(index);
-    if (stud.empty()) {
-        std::cout << "Takiego studenta nie ma w bazie danych studentów!\n";
+void Database::removePerson(const int& index) {
+    auto searchedPerson = std::find_if(people_.cbegin(), people_.cend(), [index](const auto& person) {
+        return person.second->getIndex() == index;
+    });
+
+    if (searchedPerson != people_.end()) {
+        auto stud = people_.extract(searchedPerson);
+        std::cout << "Osoba " + stud.mapped()->getFullName() + " zostala usunieta z bazy!\n";
     } else {
-        std::cout << "Student " + stud.mapped().getFullName() + " zostal usuniety z bazy!\n";
+        std::cout << "Takiej osoby nie ma w bazie danych!\n";
     }
 }
 
 void Database::searchByLastName(const std::string& lastName) {
-    for (const auto& [_, student] : students_) {
-        if (student.getLastName() == lastName) {
-            std::cout << "Znaleziono studenta:\n";
-            student.printData();
+    for (const auto& [_, person] : people_) {
+        if (person->getLastName() == lastName) {
+            std::cout << "Znaleziono osobe:\n";
+            person->printData();
             return;
         }
     }
@@ -116,12 +103,12 @@ void Database::searchByLastName(const std::string& lastName) {
 }
 
 void Database::searchByPesel(const std::string& pesel) {
-    for (const auto& [_, student] : students_) {
-        if (student.getPesel() == pesel) {
-            std::cout << "Znaleziono studenta:\n";
-            student.printData();
-            return;
-        }
+    auto searchedPerson = people_.find(pesel);
+
+    if (searchedPerson != people_.end()) {
+        std::cout << "Znaleziono osobe:\n";
+        searchedPerson->second->printData();
+        return;
     }
 
     std::cout << "Nie ma takiego peselu w bazie!\n";
@@ -151,7 +138,7 @@ bool Database::checkPeselCorrectness(const std::string& pesel) {
 }
 
 bool Database::isEmpty() {
-    if (students_.empty()) {
+    if (people_.empty()) {
         return true;
     }
 

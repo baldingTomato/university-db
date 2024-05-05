@@ -10,10 +10,10 @@ public:
     Student(const std::string& name, const std::string& lastname, const std::string& address, const std::string& pesel, const Sex& sex);
 
     int getIndex() const override;
-    void setIndex(const int& index) override;
+    void setIndex(const int&) override;
 
     double getEarnings() const override { return 0; };
-    void setEarnings(const double& earnings) override{};
+    void setEarnings(const double&) override{};
 
     void printData() const override;
 };

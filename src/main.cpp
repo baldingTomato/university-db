@@ -7,12 +7,12 @@ void drawMenu() {
     std::cout << "--------------------" << std::endl;
     std::cout << "Wybierz opcje:" << std::endl;
     std::cout << "1.Dodaj studenta" << std::endl;
-    std::cout << "2.Wyszukaj studenta po nazwisku" << std::endl;
-    std::cout << "3.Wyszukaj studenta po peselu" << std::endl;
-    std::cout << "4.Wyswietl studentow" << std::endl;
-    std::cout << "5.Wyswietl studentow wedug peselu" << std::endl;
-    std::cout << "6.Wyswietl studentow wedlug nazwiska" << std::endl;
-    std::cout << "7.Usun studenta" << std::endl;
+    std::cout << "2.Dodaj pracownika" << std::endl;
+    std::cout << "3.Wyszukaj osobe po nazwisku" << std::endl;
+    std::cout << "4.Wyszukaj osobe po peselu" << std::endl;
+    std::cout << "5.Wyswietl osoby (wedlug peselu)" << std::endl;
+    std::cout << "6.Wyswietl osoby wedlug nazwiska" << std::endl;
+    std::cout << "7.Usun osobe" << std::endl;
     std::cout << "8.Zamknij baze" << std::endl;
     std::cout << "--------------------" << std::endl;
 }
@@ -53,12 +53,6 @@ void readStudentsInfo(Database& db) {
     std::cin >> address;
     std::cout << "Pesel: ";
     std::cin >> pesel;
-
-    if (!db.checkPeselCorrectness(pesel)) {
-        std::cout << "Nie moze istniec taki pesel!\n\n";
-        return;
-    }
-
     std::cout << "Plec: (m lub k) ";
     std::cin >> chosenSex;
 
@@ -71,12 +65,47 @@ void readStudentsInfo(Database& db) {
         return;
     }
 
-    db.addStudent(name, lastname, address, pesel, sex);
+    std::unique_ptr<Person> ptr = std::make_unique<Student>(name, lastname, address, pesel, sex);
+
+    db.addPerson(std::move(ptr));
+}
+
+void readEmployeeInfo(Database& db) {
+    std::string name;
+    std::string lastname;
+    std::string address;
+    char chosenSex;
+    std::string pesel;
+    Sex sex;
+
+    std::cout << "Imie: ";
+    std::cin >> name;
+    std::cout << "Nazwisko: ";
+    std::cin >> lastname;
+    std::cout << "Adres: ";
+    std::cin >> address;
+    std::cout << "Pesel: ";
+    std::cin >> pesel;
+    std::cout << "Plec: (m lub k) ";
+    std::cin >> chosenSex;
+
+    if (chosenSex == 'm') {
+        sex = Sex::Male;
+    } else if (chosenSex == 'k') {
+        sex = Sex::Female;
+    } else {
+        std::cout << "Nie ma takiej opcji!\n";
+        return;
+    }
+
+    std::unique_ptr<Person> ptr = std::make_unique<Employee>(name, lastname, address, pesel, sex);
+
+    db.addPerson(std::move(ptr));
 }
 
 void readIndexToRemove(Database& db) {
     int index = -1;
-    std::cout << "Podaj indeks studenta, ktorego chcesz usunac: ";
+    std::cout << "Podaj indeks osoby, ktora chcesz usunac: ";
     std::cin >> index;
 
     if (!std::cin) {
@@ -85,7 +114,7 @@ void readIndexToRemove(Database& db) {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     } else {
-        db.removeStudent(index);
+        db.removePerson(index);
     }
 }
 
@@ -120,16 +149,17 @@ int main() {
             readStudentsInfo(db);
             break;
         case 2:
-            readLastNameToSearch(db);
+            std::cout << "Wprowadz dane nowego pracownika:\n";
+            readStudentsInfo(db);
             break;
         case 3:
-            readPeselToSearch(db);
+            readLastNameToSearch(db);
             break;
         case 4:
-            db.selectWholeDatabase();
+            readPeselToSearch(db);
             break;
         case 5:
-            db.selectAndSortByPesel();
+            db.selectWholeDatabase();
             break;
         case 6:
             db.selectAndSortByLastName();
