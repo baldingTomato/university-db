@@ -7,7 +7,7 @@ set(FLAGS_COMMON -Wall)
 set(FLAGS_LINUX -Wextra -Werror -Wconversion -pedantic)
 set(FLAGS_WINDOWS /W4 /WX /we)
 
-set(SOURCES src/database.cpp src/student.cpp)
+set(SOURCES src/database.cpp src/student.cpp src/employee.cpp src/person.cpp)
 set(TESTS tests/student-ut.cpp tests/database-ut.cpp)
 
 include(FetchContent)
