@@ -13,7 +13,8 @@ void drawMenu() {
     std::cout << "5.Wyswietl osoby (wedlug peselu)" << std::endl;
     std::cout << "6.Wyswietl osoby wedlug nazwiska" << std::endl;
     std::cout << "7.Usun osobe" << std::endl;
-    std::cout << "8.Zamknij baze" << std::endl;
+    std::cout << "8.Generuj przypadkowe dane" << std::endl;
+    std::cout << "9.Zamknij baze" << std::endl;
     std::cout << "--------------------" << std::endl;
 }
 
@@ -21,7 +22,7 @@ int readCommand() {
     int command = 0;
 
     if (std::cin >> command) {
-        if (command == 1 || command == 2 || command == 3 || command == 4 || command == 5 || command == 6 || command == 7 || command == 8) {
+        if (command == 1 || command == 2 || command == 3 || command == 4 || command == 5 || command == 6 || command == 7 || command == 8 || command == 9) {
             return command;
         } else {
             std::cout << "Nie ma takiej opcji!\n\n";
@@ -168,6 +169,9 @@ int main() {
             readIndexToRemove(db);
             break;
         case 8:
+            db.generateData();
+            break;
+        case 9:
             std::cout << "Koniec!\n";
             return 0;
         default:

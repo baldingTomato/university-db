@@ -13,9 +13,12 @@ public:
     void selectWholeDatabase();
     // void selectAndSortByPesel();
     void selectAndSortByLastName();
+    void selectAndSortByEarnings();
+    void updateEarnings(const std::string& pesel, double newEarnings);
     void removePerson(const int& index);
     void searchByLastName(const std::string& lastName);
     void searchByPesel(const std::string& pesel);
     bool checkPeselCorrectness(const std::string& pesel);
     bool isEmpty();
+    void generateData();
 };

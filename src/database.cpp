@@ -1,9 +1,12 @@
 #include "database.hpp"
 #include <algorithm>
+#include <array>
 #include <iostream>
 #include <numeric>
+#include <random>
 #include <utility>
 #include <vector>
+
 
 void Database::addPerson(std::unique_ptr<Person> person) {
     if (!checkPeselCorrectness(person->getPesel())) {
@@ -64,15 +67,32 @@ void Database::selectAndSortByLastName() {
     std::vector<std::pair<std::string, std::string>> sortedLastNames;
     sortedLastNames.reserve(people_.size());
 
-    for (const auto& [index, student] : people_) {
-        sortedLastNames.emplace_back(index, student->getLastName());
+    for (const auto& [pesel, person] : people_) {
+        sortedLastNames.emplace_back(pesel, person->getLastName());
     }
 
     std::sort(sortedLastNames.begin(), sortedLastNames.end(), [](const std::pair<std::string, std::string>& a, const std::pair<std::string, std::string>& b) {
         return a.second < b.second;
     });
 
-    for (const auto& [index, _] : sortedLastNames) {
+    for (const auto& [pesel, _] : sortedLastNames) {
+        people_.at(pesel)->printData();
+    }
+}
+
+void Database::selectAndSortByEarnings() {
+    std::vector<std::pair<std::string, double>> sortedEarnings;
+    sortedEarnings.reserve(people_.size());
+
+    for (const auto& [pesel, person] : people_) {
+        sortedEarnings.emplace_back(pesel, person->getEarnings());
+    }
+
+    std::sort(sortedEarnings.begin(), sortedEarnings.end(), [](const std::pair<std::string, double>& a, const std::pair<std::string, double>& b) {
+        return a.second > b.second;
+    });
+
+    for (const auto& [index, _] : sortedEarnings) {
         people_.at(index)->printData();
     }
 }
@@ -143,4 +163,47 @@ bool Database::isEmpty() {
     }
 
     return false;
+}
+
+void Database::updateEarnings(const std::string& pesel, double newEarnings) {
+    auto searchedPerson = people_.find(pesel);
+
+    if (searchedPerson != people_.end()) {
+        searchedPerson->second->setEarnings(newEarnings);
+    } else {
+        std::cout << "Nie ma takiego peselu w bazie!\n";
+    }
+}
+
+void Database::generateData() {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    std::array<std::string, 7> names = {"Dwalin", "Balin", "Kili", "Fili", "Bofur", "Bifur", "Bombur"};
+    std::array<std::string, 7> lastNames = {"Wokulski", "Baryka", "Judym", "Soplica", "Twardowski", "Pimko", "Ziembiewicz"};
+    std::array<std::string, 7> addresses = {"Redania", "Aretuza 34-37", "Temeria Street", "Al. Kovirska 88", "Aedirn", "Kaedwen Wschodni", "Nigdzie"};
+    std::array<std::pair<std::string, Sex>, 7> pesels = {{std::make_pair(std::string("95072485893"), Sex::Male),
+                                                          std::make_pair(std::string("64021935475"), Sex::Male),
+                                                          std::make_pair(std::string("52051928116"), Sex::Male),
+                                                          std::make_pair(std::string("84062946562"), Sex::Female),
+                                                          std::make_pair(std::string("76061025124"), Sex::Female),
+                                                          std::make_pair(std::string("98033149937"), Sex::Male)}};
+
+    std::vector<std::string> selectedNames;
+    std::vector<std::string> selectedLastNames;
+    std::vector<std::string> selectedAddresses;
+    std::vector<std::pair<std::string, Sex>> selectedPesels;
+
+    std::sample(names.begin(), names.end(), std::back_inserter(selectedNames), 5, gen);
+    std::sample(lastNames.begin(), lastNames.end(), std::back_inserter(selectedLastNames), 5, gen);
+    std::sample(addresses.begin(), addresses.end(), std::back_inserter(selectedAddresses), 5, gen);
+    std::sample(pesels.begin(), pesels.end(), std::back_inserter(selectedPesels), 5, gen);
+
+    for (int i = 0; i < 5; ++i) {
+        if (i % 2 == 0) {
+            addPerson(std::make_unique<Student>(names[i], lastNames[i], addresses[i], pesels[i].first, pesels[i].second));
+        } else {
+            addPerson(std::make_unique<Employee>(names[i], lastNames[i], addresses[i], pesels[i].first, pesels[i].second));
+        }
+    }
 }
