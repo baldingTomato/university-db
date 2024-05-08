@@ -114,3 +114,23 @@ TEST_F(DatabaseTest, DatabasePrintsOutAllPeopleSortedByLastNames) {
 
     EXPECT_EQ(output, "305044 Scooter Alvarez 123 Tracewsky Street 55030101193 Male\n3400.00 Son Gohan Gora Paozu 64050362718 Male\n399675 Izabela Lecka Al. Ujazdowskich 51 72101496826 Female\n3400.00 Kazimierz Wielki Wyszynskiego 38 88102074233 Male\n");
 }
+
+TEST_F(DatabaseTest, DatabasePrintsOutAllPeopleSortedByEarnings) {
+    db.updateEarnings("64050362718", 4500.00);
+
+    testing::internal::CaptureStdout();
+    db.selectAndSortByEarnings();
+
+    std::string output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ(output, "4500.00 Son Gohan Gora Paozu 64050362718 Male\n3400.00 Kazimierz Wielki Wyszynskiego 38 88102074233 Male\n305044 Scooter Alvarez 123 Tracewsky Street 55030101193 Male\n399675 Izabela Lecka Al. Ujazdowskich 51 72101496826 Female\n");
+}
+
+TEST_F(DatabaseTest, DatabaseCanGenerateData) {
+    Database newDb;
+
+    EXPECT_EQ(newDb.isEmpty(), true);
+
+    newDb.generateData();
+    EXPECT_EQ(newDb.isEmpty(), false);
+}
